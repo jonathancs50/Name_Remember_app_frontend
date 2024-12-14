@@ -24,48 +24,7 @@ const userProfiles = [
     personalNotes:
       "Very knowledgeable about AI and machine learning. Has one rotweiler",
     interests: ["Artificial Intelligence", "Family", "Dancing"],
-    conversationTopics: [
-      "Pet training techniques",
-      "Latest AI developments",
-      "Family",
-    ],
     meetingContext: "Met at TechCon 2024 during the AI panel discussion",
-  },
-  {
-    id: 2,
-    firstName: "Joe",
-    lastName: "Smith",
-    pronunciation: "Jo",
-    company: "Hub Spot",
-    role: "Senior Software Engineer",
-    physicalDescription: "Tall, blonde hair, athletic build",
-    personalNotes:
-      "Passionate about open-source projects. Plays guitar in a local band",
-    interests: ["Open-source software", "Music", "Hiking"],
-    conversationTopics: [
-      "Recent open-source contributions",
-      "Local music scene",
-      "Favorite hiking trails",
-    ],
-    meetingContext: "Connected at a local tech meetup",
-  },
-  {
-    id: 3,
-    firstName: "Joe",
-    lastName: "Smith",
-    pronunciation: "Jo",
-    company: "Hub Spot",
-    role: "Senior Software Engineer",
-    physicalDescription: "Tall, blonde hair, athletic build",
-    personalNotes:
-      "Passionate about open-source projects. Plays guitar in a local band",
-    interests: ["Open-source software", "Music", "Hiking"],
-    conversationTopics: [
-      "Recent open-source contributions",
-      "Local music scene",
-      "Favorite hiking trails",
-    ],
-    meetingContext: "Connected at a local tech meetup",
   },
 ];
 

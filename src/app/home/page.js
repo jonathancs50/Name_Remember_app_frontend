@@ -11,7 +11,16 @@ import { Badge } from "@/components/ui/badge";
 //   SCHOOL,
 //   OTHER,
 // };
-
+//ACTUAL EVENT RESPONSE DATA:
+// {
+//   "id": 1,
+//   "name": "TechCon 2026",
+//   "date": "2026-12-20",
+//   "location": "San Francisco Convention Center",
+//   "type": "CONFERENCE",
+//   "description": "Annual technology conference focusing on AI and ML",
+//   "eventContext": "Major tech conference where industry leaders present latest innovations. Good for networking with AI professionals.",
+// }
 const categories = [
   { id: 1, name: "EMCC Church", color: "bg-blue-500" },
   { id: 2, name: "AWS Summit 2024", color: "bg-pink-500" },

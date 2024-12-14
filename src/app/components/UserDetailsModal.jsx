@@ -98,10 +98,10 @@ export function UserDetailsModal({ user, onClose }) {
               <p>
                 <strong>Interests:</strong> {user.interests.join(", ")}
               </p>
-              <p>
+              {/* <p>
                 <strong>Conversation Topics:</strong>{" "}
                 {user.conversationTopics.join(", ")}
-              </p>
+              </p> */}
             </div>
             <Separator />
             <div className="w-full">

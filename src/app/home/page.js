@@ -13,7 +13,7 @@ import { Badge } from "@/components/ui/badge";
 // };
 
 const categories = [
-  { id: 1, name: "Bridge Church", color: "bg-blue-500" },
+  { id: 1, name: "EMCC Church", color: "bg-blue-500" },
   { id: 2, name: "AWS Summit 2024", color: "bg-pink-500" },
   { id: 3, name: "Gym", color: "bg-green-500" },
   { id: 4, name: "David's party", color: "bg-yellow-500" },

@@ -35,6 +35,9 @@ const categories = [
   { id: 6, name: "Running Club", color: "bg-pink-500" },
   { id: 7, name: "Mike's party", color: "bg-green-500" },
   { id: 8, name: "Becks Wedding", color: "bg-yellow-500" },
+  { id: 9, name: "Mike's party", color: "bg-green-500" },
+  { id: 10, name: "Mike's party", color: "bg-green-500" },
+  { id: 11, name: "Mike's party", color: "bg-green-500" },
 ];
 
 export default function HomePage() {

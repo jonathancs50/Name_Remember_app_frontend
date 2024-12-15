@@ -33,10 +33,13 @@ export default function HowItWorks() {
       <h2 className="text-3xl font-bold text-center mb-12">How It Works</h2>
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
         {steps.map((step) => (
-          <Card className="overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+          <Card
+            key={step.id} // Add the key prop here
+            className="overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
+          >
             <div className={`h-2 ${step.color}`} />
             <CardHeader>
-              <CardTitle className="flex justify-between items-center  font-bold text-2xl">
+              <CardTitle className="flex justify-between items-center font-bold text-2xl">
                 {step.title}
               </CardTitle>
             </CardHeader>
@@ -49,3 +52,4 @@ export default function HowItWorks() {
     </section>
   );
 }
+

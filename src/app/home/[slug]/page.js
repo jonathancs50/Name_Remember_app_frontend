@@ -83,6 +83,12 @@ export default function EventPage() {
         <Button onClick={() => setIsAddModalOpen(true)}>
           <Plus className="mr-2 h-4 w-4" /> Add Person
         </Button>
+        <Button className="ml-4 bg-green-500 hover:bg-green-700"onClick={() => setIsAddModalOpen(true)}>
+          Update Event
+        </Button>
+        <Button className="ml-4 bg-red-600 hover:bg-red-900"onClick={() => setIsAddModalOpen(true)}>
+          Delete Event
+        </Button>
       </div>
       <motion.div
         className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"

@@ -46,6 +46,7 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Button } from "@/components/ui/button";
 
 export function UserDetailsModal({ user, onClose }) {
   return (
@@ -54,6 +55,11 @@ export function UserDetailsModal({ user, onClose }) {
         <DialogHeader>
           <DialogTitle className="text-center">User Profile</DialogTitle>
         </DialogHeader>
+        <div className="flex justify-between items-center">
+        <Button className="bg-green-500 hover:bg-green-700">Update</Button>
+        <Button className="bg-red-600 hover:bg-red-900">Delete</Button>
+
+        </div>
         <ScrollArea className="max-h-[80vh] pr-4">
           <div className="flex flex-col items-center space-y-4 mt-4">
             <Avatar className="w-24 h-24">

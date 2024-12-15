@@ -9,6 +9,7 @@ import { UserDetailsModal } from "@/app/components/UserDetailsModal";
 import { AddPersonModal } from "@/app/components/AddPersonModal";
 import { motion } from "framer-motion";
 import { Plus } from "lucide-react";
+import Link from "next/link";
 
 // Simulated user data (replace with actual API call later)
 const userProfiles = [
@@ -79,16 +80,31 @@ export default function EventPage() {
           {decodeURIComponent(eventName)}
         </h1>
       </div>
-      <div className="flex justify-end">
-        <Button onClick={() => setIsAddModalOpen(true)}>
-          <Plus className="mr-2 h-4 w-4" /> Add Person
+      <div className="flex justify-between items-center">
+        {/* Left-aligned Back button */}
+        {/* <Button className="bg-[#030711] text-white hover:bg-[#050a13]"> */}
+        <Button variant="outline">
+        <Link href="/home">Back to Events</Link>
         </Button>
-        <Button className="ml-4 bg-green-500 hover:bg-green-700"onClick={() => setIsAddModalOpen(true)}>
-          Update Event
-        </Button>
-        <Button className="ml-4 bg-red-600 hover:bg-red-900"onClick={() => setIsAddModalOpen(true)}>
-          Delete Event
-        </Button>
+
+        {/* Right-aligned buttons */}
+        <div className="flex space-x-4">
+          <Button onClick={() => setIsAddModalOpen(true)}>
+            <Plus className="mr-2 h-4 w-4" /> Add Person
+          </Button>
+          <Button
+            className="bg-green-500 hover:bg-green-700"
+            onClick={() => setIsAddModalOpen(true)}
+          >
+            Update Event
+          </Button>
+          <Button
+            className="bg-red-600 hover:bg-red-900"
+            onClick={() => setIsAddModalOpen(true)}
+          >
+            Delete Event
+          </Button>
+        </div>
       </div>
       <motion.div
         className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"

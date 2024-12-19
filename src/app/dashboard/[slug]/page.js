@@ -73,6 +73,21 @@ export default function EventPage() {
   if (error) return <div>Error: {error}</div>;
   if (!userData) return <div>No user data found</div>;
 
+  const handleUpdate = (updatedUser) => {
+    // Send updatedUser to your backend
+    // Update the user state if the backend update was successful
+    // setUser(updatedUser);
+    console.log(updatedUser);
+  };
+
+  const handleDelete = (userId) => {
+    // Send delete request to your backend
+    // Remove the user from your local state or refresh the user list
+    setUserData((prevData) => prevData.filter((user) => user.id !== userId));
+    console.log(`Deleting user with ID: ${userId}`);
+    // Close the modal or update your UI as needed
+  };
+
   return (
     <div className="container mx-auto p-4 space-y-8">
       <div className="text-center space-y-2">
@@ -84,7 +99,7 @@ export default function EventPage() {
         {/* Left-aligned Back button */}
         {/* <Button className="bg-[#030711] text-white hover:bg-[#050a13]"> */}
         <Button variant="outline">
-        <Link href="/home">Back to Events</Link>
+          <Link href="/dashboard">Back to Events</Link>
         </Button>
 
         {/* Right-aligned buttons */}
@@ -155,6 +170,8 @@ export default function EventPage() {
         <UserDetailsModal
           user={selectedUser}
           onClose={() => setSelectedUser(null)}
+          onUpdate={handleUpdate}
+          onDelete={handleDelete}
         />
       )}
       <AddPersonModal

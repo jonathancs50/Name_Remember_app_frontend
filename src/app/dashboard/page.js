@@ -1,6 +1,11 @@
+"use client";
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
+import { useState, useEffect } from "react";
+import { AddEventModal } from "../components/AddEventModal";
 
 const getCategoryColor = (category) => {
   const colorMap = {
@@ -105,15 +110,65 @@ const events = [
   },
 ];
 
+async function getEventData() {
+  // Simulate API delay
+  await new Promise((resolve) => setTimeout(resolve, 500));
+
+  // In a real scenario, you would fetch data based on the eventId
+  // For now, we'll return all persons
+  return events;
+}
+
 export default function HomePage() {
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [eventData, setEventData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const data = await getEventData();
+        setEventData(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    fetchData();
+  }, []);
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
+  if (!eventData) return <div>No groups found</div>;
+
+  //MODAL FUNCTIONS
+  const handleAddEvent = (newEvent) => {
+    //UPDATE THE UI
+    setEventData((prevData) => [...prevData, newEvent]);
+    //UPDATE THE DB
+  };
+
   return (
     <div className="space-y-8">
       <div className="text-center space-y-2">
         <h1 className="text-4xl font-bold">Your Groups</h1>
-        <p className="text-muted-foreground">Create an Event or Friend Group</p>
+        <p className="text-muted-foreground">
+          Create an group for events/friends
+        </p>
+        <div className="flex flex-col sm:flex-row gap-4 w-full sm:justify-end">
+          <Button
+            className="w-full sm:w-auto"
+            onClick={() => setIsAddModalOpen(true)}
+          >
+            <Plus className=" h-4 w-4" />
+            Add Group
+          </Button>
+        </div>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {events.map((event) => (
+        {eventData.map((event) => (
           <Link
             href={`dashboard/${event.name}`}
             key={event.id}
@@ -140,6 +195,11 @@ export default function HomePage() {
           </Link>
         ))}
       </div>
+      <AddEventModal
+        isOpen={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
+        onAddEvent={handleAddEvent}
+      />
     </div>
   );
 }

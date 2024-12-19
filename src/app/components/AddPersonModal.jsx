@@ -17,10 +17,13 @@ export function AddPersonModal({ isOpen, onClose, onAddPerson }) {
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
-    role: "",
+    pronunciation: "",
     company: "",
+    role: "",
+    personalNotes: "",
     interests: "",
-    notes: "",
+    meetingContext: "",
+    memoryTriggers: "",
   });
 
   const handleChange = (e) => {
@@ -59,6 +62,7 @@ export function AddPersonModal({ isOpen, onClose, onAddPerson }) {
                 onChange={handleChange}
                 className="col-span-3"
                 required
+                placeholder="Paul"
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
@@ -71,19 +75,20 @@ export function AddPersonModal({ isOpen, onClose, onAddPerson }) {
                 value={formData.lastName}
                 onChange={handleChange}
                 className="col-span-3"
-                required
+                placeholder="Atreides"
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="role" className="text-right">
-                Role
+              <Label htmlFor="pronunciation" className="text-right">
+                Pronunciation
               </Label>
               <Input
-                id="role"
-                name="role"
-                value={formData.role}
+                id="pronunciation"
+                name="pronunciation"
+                value={formData.pronunciation}
                 onChange={handleChange}
                 className="col-span-3"
+                placeholder="ah-tray-deez"
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
@@ -96,6 +101,33 @@ export function AddPersonModal({ isOpen, onClose, onAddPerson }) {
                 value={formData.company}
                 onChange={handleChange}
                 className="col-span-3"
+                placeholder="House Atreides"
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="role" className="text-right">
+                Role
+              </Label>
+              <Input
+                id="role"
+                name="role"
+                value={formData.role}
+                onChange={handleChange}
+                className="col-span-3"
+                placeholder="CEO"
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="personalNotes" className="text-right">
+                Notes
+              </Label>
+              <Textarea
+                id="personalNotes"
+                name="personalNotes"
+                value={formData.personalNotes}
+                onChange={handleChange}
+                className="col-span-3"
+                placeholder="Highly trained in combat and strategy. Multilingual. Likes water."
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
@@ -108,19 +140,33 @@ export function AddPersonModal({ isOpen, onClose, onAddPerson }) {
                 value={formData.interests}
                 onChange={handleChange}
                 className="col-span-3"
-                placeholder="Separate interests with commas"
+                placeholder="Desert ecology, water, philosophy"
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="notes" className="text-right">
-                Notes
+              <Label htmlFor="meetingContext" className="text-right">
+                Meeting Context
               </Label>
               <Textarea
-                id="notes"
-                name="notes"
-                value={formData.notes}
+                id="meetingContext"
+                name="meetingContext"
+                value={formData.meetingContext}
                 onChange={handleChange}
                 className="col-span-3"
+                placeholder="Met him at the water dispenser."
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="memoryTriggers" className="text-right">
+                Memory Triggers
+              </Label>
+              <Textarea
+                id="memoryTriggers"
+                name="memoryTriggers"
+                value={formData.memoryTriggers}
+                onChange={handleChange}
+                className="col-span-3"
+                placeholder="Had very blue eyes,was very dusty and looked dehydrated."
               />
             </div>
           </div>

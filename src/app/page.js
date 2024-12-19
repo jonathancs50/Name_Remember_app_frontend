@@ -6,6 +6,8 @@ import FeaturesSection from "./components/FeaturesSection";
 import HowItWorks from "./components/HowItWorks";
 import SocialProof from "./components/SocialProof";
 import Footer from "./components/Footer";
+import PricingCards from "./components/PricingCard";
+import LearnMore from "./components/LearnMore";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,7 +19,9 @@ export default function Home() {
     >
       <HeroSection />
       <FeaturesSection />
+      <LearnMore />
       <HowItWorks />
+      <PricingCards />
       <SocialProof />
       <Footer />
     </main>

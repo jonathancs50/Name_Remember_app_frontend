@@ -1,19 +1,28 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { Button } from "@/components/ui/button"
-import { motion } from 'framer-motion'
-import Image from "next/image"
-import FancyButton from "./FancyButton"
-import { ArrowRight } from 'lucide-react'
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { motion } from "framer-motion";
+import Image from "next/image";
+import FancyButton from "./FancyButton";
+import { ArrowRight } from "lucide-react";
 
 export default function HeroSection() {
-  const [isHovered, setIsHovered] = useState(false)
+  const [isHovered, setIsHovered] = useState(false);
 
+  const scrollToLearnMore = () => {
+    const learnMoreSection = document.getElementById("learn-more");
+    if (learnMoreSection) {
+      learnMoreSection.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+  };
   return (
     <section className="container mx-auto px-4 py-16 md:py-24 overflow-hidden">
       <div className="grid md:grid-cols-2 gap-12 items-center">
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, x: -50 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}
@@ -32,12 +41,13 @@ export default function HeroSection() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
             {/* <FancyButton /> */}
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               size="lg"
               className="group"
               onMouseEnter={() => setIsHovered(true)}
               onMouseLeave={() => setIsHovered(false)}
+              onClick={scrollToLearnMore}
             >
               Learn More
               <motion.div
@@ -49,7 +59,7 @@ export default function HeroSection() {
             </Button>
           </div>
         </motion.div>
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
@@ -66,6 +76,5 @@ export default function HeroSection() {
         </motion.div>
       </div>
     </section>
-  )
+  );
 }
-

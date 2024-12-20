@@ -67,7 +67,7 @@ export default function HeroSection() {
         >
           <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-blue-600/20 rounded-full filter blur-3xl"></div>
           <Image
-            src="/meetminder-removebg-preview.png"
+            src="/meet.png"
             alt="People connecting"
             width={600}
             height={400}

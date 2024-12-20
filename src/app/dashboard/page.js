@@ -8,6 +8,8 @@ import { useState, useEffect } from "react";
 import { AddEventModal } from "../components/AddEventModal";
 import { motion } from "framer-motion";
 
+import { useSession } from "next-auth/react";
+
 const getCategoryColor = (category) => {
   const colorMap = {
     WORK_FUNCTION: "bg-orange-500",
@@ -121,6 +123,7 @@ async function getEventData() {
 }
 
 export default function HomePage() {
+  const { data: session } = useSession();
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [eventData, setEventData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -153,6 +156,7 @@ export default function HomePage() {
 
   return (
     <div className="space-y-8">
+      {/* <pre>{JSON.stringify(session, null, 2)}</pre> */}
       <div className="text-center space-y-2">
         <h1 className="text-4xl font-bold">Your Groups</h1>
         <p className="text-muted-foreground">

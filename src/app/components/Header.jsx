@@ -1,10 +1,47 @@
 "use client";
-
-import { Button } from "@/components/ui/button";
+import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import AccountMenu from "./AccountMenu";
+import LoginButton from "./LoginButton";
+import { useEffect, useState } from "react";
 
 export default function Header() {
+  const { data: session, status } = useSession();
+  const [isUserData, setIsUserData] = useState();
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      try {
+        if (!session?.accessToken) return;
+
+        const response = await fetch("http://localhost:8080/api/users/me", {
+          headers: {
+            Authorization: `Bearer ${session.accessToken}`,
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch persons");
+        }
+
+        const data = await response.json();
+        // Extract just the username from tokenClaims
+        const username = data.tokenClaims.username;
+        setIsUserData(username);
+        setError(null);
+      } catch (err) {
+        setError(err.message);
+        setIsUserData("User");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserInfo();
+  }, [session]);
+
   const handleLogout = () => {
     // Implement logout logic
     console.log("Logging out...");
@@ -19,28 +56,30 @@ export default function Header() {
     // Implement account update logic
     console.log("Updating account...");
   };
+
+  console.log(isUserData);
   return (
     <header className="container mx-auto px-4 py-6 flex flex-col sm:flex-row justify-between items-center">
       <div>
         <Link href="/dashboard">
           <h1 className="text-3xl font-bold cursor-pointer">RememberMe</h1>
         </Link>
-        {/* <p className="text-blue-200">
-          Never forget a face, always remember a story
-        </p> */}
       </div>
-      <div className="space-x-4 mt-4 sm:mt-0">
-        <Button variant="outline">Log In</Button>
-        <Button>Sign Up</Button>
-      </div>
-      <div className="p-4">
-        <AccountMenu
-          name="John Doe"
-          onLogout={handleLogout}
-          onDeleteAccount={handleDeleteAccount}
-          onUpdateAccount={handleUpdateAccount}
-        />
-      </div>
+      {status === "loading" ? null : session ? (
+        <div className="p-4">
+          <AccountMenu
+            name={isUserData}
+            onLogout={signOut}
+            onDeleteAccount={handleDeleteAccount}
+            onUpdateAccount={handleUpdateAccount}
+          />
+        </div>
+      ) : (
+        <div className="space-x-4 mt-4 sm:mt-0">
+          <LoginButton text="Sign up" />
+          <LoginButton text="Log in" />
+        </div>
+      )}
     </header>
   );
 }

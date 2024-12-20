@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { useState, useEffect } from "react";
 import { AddEventModal } from "../components/AddEventModal";
+import { motion } from "framer-motion";
 
 const getCategoryColor = (category) => {
   const colorMap = {
@@ -168,31 +169,38 @@ export default function HomePage() {
         </div>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {eventData.map((event) => (
-          <Link
-            href={`dashboard/${event.name}`}
+        {eventData.map((event, index) => (
+          <motion.div
             key={event.id}
-            className="group"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: index * 0.1 }}
           >
-            <Card className="overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
-              <div className={`h-2 ${getCategoryColor(event.type)}`} />
-              <CardHeader>
-                <CardTitle className="flex justify-between items-center">
-                  {event.name}
+            <Link
+              href={`dashboard/${event.name}`}
+              key={event.id}
+              className="group"
+            >
+              <Card className="overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+                <div className={`h-2 ${getCategoryColor(event.type)}`} />
+                <CardHeader>
+                  <CardTitle className="flex justify-between items-center">
+                    {event.name}
 
-                  <Badge
-                    variant="secondary"
-                    className="group-hover:bg-primary group-hover:text-primary-foreground transition-colors"
-                  >
-                    {event.date}
-                  </Badge>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground">{event.description}</p>
-              </CardContent>
-            </Card>
-          </Link>
+                    <Badge
+                      variant="secondary"
+                      className="group-hover:bg-primary group-hover:text-primary-foreground transition-colors"
+                    >
+                      {event.date}
+                    </Badge>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">{event.description}</p>
+                </CardContent>
+              </Card>
+            </Link>
+          </motion.div>
         ))}
       </div>
       <AddEventModal

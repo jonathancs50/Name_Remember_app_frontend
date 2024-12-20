@@ -75,9 +75,8 @@ export default function LearnMore() {
           <CardContent>
             <p className="text-muted-foreground">
               Your relationships are personal, and we take that seriously. All
-              your data is encrypted and stored securely. You have complete
-              control over your contact information, with the ability to export
-              or delete data at any time.
+              your data is stored securely. You have complete control over your
+              contact information, with the ability to delete data at any time.
             </p>
           </CardContent>
         </Card>

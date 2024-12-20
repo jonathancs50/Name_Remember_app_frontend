@@ -23,105 +23,6 @@ const getCategoryColor = (category) => {
   return colorMap[category] || colorMap.OTHER;
 };
 
-const events = [
-  {
-    id: 1,
-    name: "EMCC Church",
-    date: "",
-    type: "SOCIAL",
-    description: "Every Sunday at 10:15am",
-    eventContext: "",
-  },
-  {
-    id: 2,
-    name: "Familiy gathering",
-    type: "SOCIAL",
-    description: "Catching up with the family",
-    eventContext: "",
-  },
-  {
-    id: 3,
-    name: "Mike's party",
-    date: "2026-12-20",
-    type: "SOCIAL",
-    description: "Having a braai and Mike's house",
-    eventContext: "",
-  },
-  {
-    id: 4,
-    name: "Gym",
-    date: "",
-    type: "HOBBIES",
-    description: "Exercising",
-    eventContext: "",
-  },
-  {
-    id: 5,
-    name: "Familiy gathering",
-    date: "2026-12-20",
-    type: "SOCIAL",
-    description: "My local church",
-    eventContext: "",
-  },
-  {
-    id: 6,
-    name: "Running Club",
-    date: "2026-12-20",
-    type: "HOBBIES",
-    description: "My local church",
-    eventContext: "",
-  },
-  {
-    id: 7,
-    name: "Mike's party",
-    date: "2026-12-20",
-    type: "SOCIAL",
-    description: "My local church",
-    eventContext: "",
-  },
-  {
-    id: 8,
-    name: "Becks Wedding",
-    date: "2026-12-20",
-    type: "SOCIAL",
-    description: "My local church",
-    eventContext: "",
-  },
-  {
-    id: 9,
-    name: "AWS",
-    date: "2026-12-20",
-    type: "CONFERENCE",
-    description: "My local church",
-    eventContext: "",
-  },
-  {
-    id: 10,
-    name: "Golf with clients",
-    date: "2026-12-20",
-    type: "NETWORKING",
-    description: "My local church",
-    eventContext: "",
-  },
-  {
-    id: 11,
-    name: "Mike's party",
-    date: "2026-12-20",
-    type: "HOBBIES",
-    description: "My local church",
-    eventContext: "",
-  },
-];
-
-async function getEventData() {
-  // Simulate API delay
-  await new Promise((resolve) => setTimeout(resolve, 500));
-
-  // In a real scenario, you would fetch data based on the eventId
-  // For now, we'll return all persons
-  return events;
-}
-
 export default function HomePage() {
   const { data: session } = useSession();
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -132,8 +33,22 @@ export default function HomePage() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const data = await getEventData();
+        if (!session?.accessToken) return;
+
+        const response = await fetch("http://localhost:8080/api/events", {
+          headers: {
+            Authorization: `Bearer ${session.accessToken}`,
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch persons");
+        }
+
+        const data = await response.json();
         setEventData(data);
+        setError(null);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -142,21 +57,44 @@ export default function HomePage() {
     }
 
     fetchData();
-  }, []);
+  }, [session]);
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
   if (!eventData) return <div>No groups found</div>;
 
   //MODAL FUNCTIONS
-  const handleAddEvent = (newEvent) => {
-    //UPDATE THE UI
-    setEventData((prevData) => [...prevData, newEvent]);
-    //UPDATE THE DB
+  const handleAddEvent = async (newEvent) => {
+    try {
+      const response = await fetch("http://localhost:8080/api/events", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${session.accessToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: newEvent.name,
+          date: newEvent.date,
+          location: newEvent.location,
+          type: newEvent.type,
+          description: newEvent.description,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to create event");
+      }
+
+      const createdEvent = await response.json();
+      setEventData((prevData) => [...prevData, createdEvent]);
+    } catch (error) {
+      console.error("Error creating event:", error);
+      // You might want to show an error message to the user here
+    }
   };
 
   return (
     <div className="space-y-8">
-      {/* <pre>{JSON.stringify(session, null, 2)}</pre> */}
+      <pre>{JSON.stringify(session, null, 2)}</pre>
       <div className="text-center space-y-2">
         <h1 className="text-4xl font-bold">Your Groups</h1>
         <p className="text-muted-foreground">
@@ -181,7 +119,7 @@ export default function HomePage() {
             transition={{ duration: 0.5, delay: index * 0.1 }}
           >
             <Link
-              href={`dashboard/${event.name}`}
+              href={`dashboard/${event.name}/${event.id}`}
               key={event.id}
               className="group"
             >

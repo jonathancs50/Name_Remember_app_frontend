@@ -16,64 +16,49 @@ import { ChevronLeft, Plus } from "lucide-react";
 import Link from "next/link";
 import { UpdateEventModal } from "@/app/components/UpdateEventModal";
 
+import { useSession } from "next-auth/react";
 // Simulated person data (replace with actual API call later)
-const events = [
-  {
-    id: 1,
-    name: "EMCC Church",
-    date: "",
-    type: "SOCIAL",
-    description: "Every Sunday at 10:15am",
-    eventContext: "",
-  },
-];
-const personProfiles = [
-  {
-    id: 1,
-    firstName: "Sarah",
-    lastName: "Johnson",
-    pronunciation: "Se-rah",
-    company: "Tech Corp",
-    role: "Intermediate Software Engineer",
-    physicalDescription:
-      "Average height, brown hair, usually wears glasses, has a distinctive laugh",
-    personalNotes:
-      "Very knowledgeable about AI and machine learning. Has one rotweiler",
-    interests: ["Artificial Intelligence", "Family", "Dancing"],
-    meetingContext: "Met at TechCon 2024 during the AI panel discussion",
-  },
-];
-
-async function getPersonData(eventName, eventId) {
-  // Simulate API delay
-  await new Promise((resolve) => setTimeout(resolve, 500));
-
-  // In a real scenario, you would fetch data based on the eventId
-  // For now, we'll return all persons
-  return personProfiles;
-}
-
-async function getEventData(eventId) {
-  // Simulate API delay
-  await new Promise((resolve) => setTimeout(resolve, 500));
-
-  // In a real scenario, you would fetch data based on the eventId
-  // For now, we'll return all persons
-  return events[0];
-}
+// const events = [
+//   {
+//     id: 1,
+//     name: "EMCC Church",
+//     date: "",
+//     type: "SOCIAL",
+//     description: "Every Sunday at 10:15am",
+//     eventContext: "",
+//   },
+// ];
+// const personProfiles = [
+//   {
+//     id: 1,
+//     firstName: "Sarah",
+//     lastName: "Johnson",
+//     pronunciation: "Se-rah",
+//     company: "Tech Corp",
+//     role: "Intermediate Software Engineer",
+//     physicalDescription:
+//       "Average height, brown hair, usually wears glasses, has a distinctive laugh",
+//     personalNotes:
+//       "Very knowledgeable about AI and machine learning. Has one rotweiler",
+//     interests: ["Artificial Intelligence", "Family", "Dancing"],
+//     meetingContext: "Met at TechCon 2024 during the AI panel discussion",
+//   },
+// ];
 
 export default function EventPage() {
+  const { data: session } = useSession();
   const [selectedPerson, setSelectedPerson] = useState(null);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isPersonModalOpen, setIsPersonModalOpen] = useState(false);
   const [isEventUpdateModalOpen, setIsEventUpdateModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
-  const params = useParams();
   const searchParams = useSearchParams();
+  const params = useParams();
   const eventName = params.slug;
-  const eventId = searchParams.get("id");
+  const eventId = params.id; // Get id directly from params
 
+  const [indexCardList, setIndexCardList] = useState(null);
   const [personData, setPersonData] = useState(null);
   const [eventData, setEventData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -82,10 +67,46 @@ export default function EventPage() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const personData = await getPersonData(eventName, eventId);
-        setPersonData(personData);
-        const eventData = await getEventData(eventId);
-        setEventData(eventData);
+        if (!session?.accessToken) return;
+
+        const response = await fetch(
+          `http://localhost:8080/api/index-cards/event/${eventId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${session.accessToken}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch persons");
+        }
+
+        const data = await response.json();
+
+        // Extract unique persons with their memory triggers
+        const uniquePersons = data.reduce((acc, item) => {
+          const personId = item.person.id;
+          if (!acc[personId]) {
+            acc[personId] = {
+              ...item.person,
+              memoryTriggers: item.memoryTriggers,
+            };
+          }
+          return acc;
+        }, {});
+
+        // Convert the object to an array
+        const personsArray = Object.values(uniquePersons);
+        setPersonData(personsArray);
+
+        // Set event data (taking the first event since they're all the same)
+        if (data.length > 0) {
+          setEventData(data[0].event);
+        }
+
+        setError(null);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -94,7 +115,7 @@ export default function EventPage() {
     }
 
     fetchData();
-  }, [eventName, eventId]);
+  }, [session, eventId]); // Added eventId to dependencies
 
   const handleAddPerson = (newPerson) => {
     setPersonData((prevData) => [...prevData, newPerson]);
@@ -163,6 +184,7 @@ export default function EventPage() {
       });
     }
   };
+  if (isLoading || !eventData) return <div>Loading...</div>;
   return (
     <div className="container mx-auto p-4 space-y-8">
       <div className="text-center space-y-2">

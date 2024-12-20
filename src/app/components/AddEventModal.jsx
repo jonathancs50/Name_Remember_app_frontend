@@ -26,7 +26,7 @@ export function AddEventModal({ isOpen, onClose, onAddEvent }) {
     date: "",
     type: "",
     description: "",
-    eventContext: "",
+    location: "",
   });
 
   const handleChange = (e) => {
@@ -40,9 +40,13 @@ export function AddEventModal({ isOpen, onClose, onAddEvent }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onAddEvent({
-      ...formData,
-      id: Date.now(), // temporary ID, replace with proper ID generation in production
+    onAddEvent(formData);
+    setFormData({
+      name: "",
+      date: "",
+      type: "",
+      description: "",
+      location: "",
     });
     onClose();
   };
@@ -80,13 +84,32 @@ export function AddEventModal({ isOpen, onClose, onAddEvent }) {
                 value={formData.date}
                 onChange={handleChange}
                 className="col-span-3"
+                placeholder="Optional"
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="location" className="text-right">
+                Location
+              </Label>
+              <Input
+                id="location"
+                name="location"
+                value={formData.location}
+                onChange={handleChange}
+                className="col-span-3"
+                required
+                placeholder="Optional"
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="type" className="text-right">
                 Type
               </Label>
-              <Select onValueChange={handleTypeChange} value={formData.type}>
+              <Select
+                onValueChange={handleTypeChange}
+                value={formData.type}
+                required
+              >
                 <SelectTrigger className="col-span-3">
                   <SelectValue placeholder="Select event type" />
                 </SelectTrigger>
@@ -111,20 +134,8 @@ export function AddEventModal({ isOpen, onClose, onAddEvent }) {
                 value={formData.description}
                 onChange={handleChange}
                 className="col-span-3"
+                required
                 placeholder="Event description"
-              />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="eventContext" className="text-right">
-                Event Context
-              </Label>
-              <Textarea
-                id="eventContext"
-                name="eventContext"
-                value={formData.eventContext}
-                onChange={handleChange}
-                className="col-span-3"
-                placeholder="Additional context for the event"
               />
             </div>
           </div>

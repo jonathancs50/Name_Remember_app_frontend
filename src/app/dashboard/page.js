@@ -64,6 +64,23 @@ export default function HomePage() {
 
   //MODAL FUNCTIONS
   const handleAddEvent = async (newEvent) => {
+    const eventPayload = {
+      name: newEvent.name,
+      type: newEvent.type,
+      description: newEvent.description,
+    };
+
+    // Only add optional fields if they have values and aren't empty strings
+    if (newEvent.date && newEvent.date.trim() !== "") {
+      eventPayload.date = newEvent.date;
+    }
+
+    if (newEvent.location && newEvent.location.trim() !== "") {
+      eventPayload.location = newEvent.location;
+    }
+
+    console.log(eventPayload);
+    console.log(session.accessToken);
     try {
       const response = await fetch("http://localhost:8080/api/events", {
         method: "POST",
@@ -71,30 +88,36 @@ export default function HomePage() {
           Authorization: `Bearer ${session.accessToken}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          name: newEvent.name,
-          date: newEvent.date,
-          location: newEvent.location,
-          type: newEvent.type,
-          description: newEvent.description,
-        }),
+        body: JSON.stringify(eventPayload),
       });
 
       if (!response.ok) {
-        throw new Error("Failed to create event");
+        const errorData = await response.json().catch(() => null);
+        throw new Error(
+          errorData?.message || `Failed to create event: ${response.status}`
+        );
       }
 
       const createdEvent = await response.json();
       setEventData((prevData) => [...prevData, createdEvent]);
+      toast({
+        title: "Success",
+        description: "Event created successfully",
+      });
     } catch (error) {
       console.error("Error creating event:", error);
-      // You might want to show an error message to the user here
+      toast({
+        title: "Error",
+        description:
+          error.message || "Failed to create event. Please try again.",
+        variant: "destructive",
+      });
     }
   };
 
   return (
     <div className="space-y-8">
-      <pre>{JSON.stringify(session, null, 2)}</pre>
+      {/* <pre>{JSON.stringify(session, null, 2)}</pre> */}
       <div className="text-center space-y-2">
         <h1 className="text-4xl font-bold">Your Groups</h1>
         <p className="text-muted-foreground">

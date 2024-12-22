@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { useParams, useSearchParams } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -17,35 +18,9 @@ import Link from "next/link";
 import { UpdateEventModal } from "@/app/components/UpdateEventModal";
 
 import { useSession } from "next-auth/react";
-// Simulated person data (replace with actual API call later)
-// const events = [
-//   {
-//     id: 1,
-//     name: "EMCC Church",
-//     date: "",
-//     type: "SOCIAL",
-//     description: "Every Sunday at 10:15am",
-//     eventContext: "",
-//   },
-// ];
-// const personProfiles = [
-//   {
-//     id: 1,
-//     firstName: "Sarah",
-//     lastName: "Johnson",
-//     pronunciation: "Se-rah",
-//     company: "Tech Corp",
-//     role: "Intermediate Software Engineer",
-//     physicalDescription:
-//       "Average height, brown hair, usually wears glasses, has a distinctive laugh",
-//     personalNotes:
-//       "Very knowledgeable about AI and machine learning. Has one rotweiler",
-//     interests: ["Artificial Intelligence", "Family", "Dancing"],
-//     meetingContext: "Met at TechCon 2024 during the AI panel discussion",
-//   },
-// ];
 
 export default function EventPage() {
+  const router = useRouter();
   const { data: session } = useSession();
   const [selectedPerson, setSelectedPerson] = useState(null);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -69,6 +44,7 @@ export default function EventPage() {
       try {
         if (!session?.accessToken) return;
 
+        // First attempt to get index cards with event and person data
         const response = await fetch(
           `http://localhost:8080/api/index-cards/event/${eventId}`,
           {
@@ -85,24 +61,40 @@ export default function EventPage() {
 
         const data = await response.json();
 
-        // Extract unique persons with their memory triggers
-        const uniquePersons = data.reduce((acc, item) => {
-          const personId = item.person.id;
-          if (!acc[personId]) {
-            acc[personId] = {
-              ...item.person,
-              memoryTriggers: item.memoryTriggers,
-            };
+        if (data.length === 0) {
+          // If no index cards exist, fetch event data directly
+          const eventResponse = await fetch(
+            `http://localhost:8080/api/events/${eventId}`,
+            {
+              headers: {
+                Authorization: `Bearer ${session.accessToken}`,
+                "Content-Type": "application/json",
+              },
+            }
+          );
+
+          if (!eventResponse.ok) {
+            throw new Error("Failed to fetch event");
           }
-          return acc;
-        }, {});
 
-        // Convert the object to an array
-        const personsArray = Object.values(uniquePersons);
-        setPersonData(personsArray);
+          const eventData = await eventResponse.json();
+          setEventData(eventData);
+          setPersonData([]);
+        } else {
+          // Process index cards data as before
+          const uniquePersons = data.reduce((acc, item) => {
+            const personId = item.person.id;
+            if (!acc[personId]) {
+              acc[personId] = {
+                ...item.person,
+                memoryTriggers: item.memoryTriggers,
+              };
+            }
+            return acc;
+          }, {});
 
-        // Set event data (taking the first event since they're all the same)
-        if (data.length > 0) {
+          const personsArray = Object.values(uniquePersons);
+          setPersonData(personsArray);
           setEventData(data[0].event);
         }
 
@@ -115,68 +107,263 @@ export default function EventPage() {
     }
 
     fetchData();
-  }, [session, eventId]); // Added eventId to dependencies
+  }, [session, eventId]);
 
-  const handleAddPerson = (newPerson) => {
-    setPersonData((prevData) => [...prevData, newPerson]);
-  };
-
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
-  if (!personData) return <div>No person data found</div>;
-
-  const handleUpdate = (updatedPerson) => {
-    // Send updatedPerson to your backend
-    // Update the person state if the backend update was successful
-    // setperson(updatedPerson);
-    console.log(updatedPerson);
-  };
-
-  const handleDelete = (personId) => {
-    // Send delete request to your backend
-    // Remove the person from your local state or refresh the person list
-    setPersonData((prevData) =>
-      prevData.filter((person) => person.id !== personId)
-    );
-    console.log(`Deleting person with ID: ${personId}`);
-    // Close the modal or update your UI as needed
-  };
-
-  const handleUpdateEvent = (updatedEvent) => {
-    setEventData(updatedEvent);
-    console.log(updatedEvent);
-  };
-
-  const handleDeleteEvent = async (eventId) => {
+  const handleAddPerson = async (newPerson) => {
     try {
-      // Make API call to delete the event
-      // const response = await fetch(`/api/people/${eventId}`, {
-      //   method: "DELETE",
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //   },
-      // });
+      // First create the person
+      const personResponse = await fetch("http://localhost:8080/api/persons", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${session.accessToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newPerson),
+      });
 
-      // if (!response.ok) {
-      //   throw new Error("Failed to delete event");
-      // }
+      if (!personResponse.ok) {
+        throw new Error("Failed to create person");
+      }
 
-      // Update local state to remove the deleted event
-      // setEventData((currentEvent) =>
-      //   currentEvent.filter((event) => event.id !== eventId)
-      // );
+      const createdPerson = await personResponse.json();
 
-      console.log(eventId);
-      // Show success message
+      // Then create the index card with the new person ID and current event ID
+      const indexCardData = {
+        personId: createdPerson.id,
+        eventId: eventId, // This is already available from your params
+        interactionNotes: newPerson.interactionNotes || "", // Assuming these fields are part of your form
+        followUpItems: newPerson.followUpItems || "",
+        memoryTriggers: newPerson.memoryTriggers || "",
+      };
+
+      const indexCardResponse = await fetch(
+        "http://localhost:8080/api/index-cards",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${session.accessToken}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(indexCardData),
+        }
+      );
+
+      if (!indexCardResponse.ok) {
+        // If index card creation fails, we might want to delete the person we just created
+        // to maintain data consistency
+        await fetch(`http://localhost:8080/api/persons/${createdPerson.id}`, {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${session.accessToken}`,
+            "Content-Type": "application/json",
+          },
+        });
+        throw new Error("Failed to create index card");
+      }
+
+      const createdIndexCard = await indexCardResponse.json();
+
+      // Update the UI with the new person data including memory triggers
+      const newPersonWithTriggers = {
+        ...createdPerson,
+        memoryTriggers: createdIndexCard.memoryTriggers,
+      };
+
+      setPersonData((prevData) => [...prevData, newPersonWithTriggers]);
+
       toast({
         title: "Success",
-        description: "Event has been deleted successfully",
+        description: "Person and index card created successfully",
+        variant: "default",
+      });
+    } catch (error) {
+      console.error("Create person and index card failed:", error);
+      toast({
+        title: "Error",
+        description:
+          error.message ||
+          "Failed to create person and index card. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleUpdate = async (updatedPerson) => {
+    try {
+      const response = await fetch(
+        `http://localhost:8080/api/persons/${updatedPerson.id}`,
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${session.accessToken}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(updatedPerson),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to update person");
+      }
+
+      const updatedPersonData = await response.json();
+      setPersonData((prevData) =>
+        prevData.map((person) =>
+          person.id === updatedPersonData.id ? updatedPersonData : person
+        )
+      );
+
+      toast({
+        title: "Success",
+        description: "Person updated successfully",
+        variant: "default",
+      });
+    } catch (error) {
+      console.error("Update person failed:", error);
+      toast({
+        title: "Error",
+        description: "Failed to update person. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleDelete = async (personId) => {
+    try {
+      // First, delete the index card associated with this person and event
+      const indexCardResponse = await fetch(
+        `http://localhost:8080/api/index-cards/event/${eventId}/person/${personId}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${session.accessToken}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!indexCardResponse.ok) {
+        throw new Error("Failed to delete index card");
+      }
+
+      // Then delete the person
+      const personResponse = await fetch(
+        `http://localhost:8080/api/persons/${personId}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${session.accessToken}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!personResponse.ok) {
+        throw new Error("Failed to delete person");
+      }
+
+      // Update UI state after successful deletion
+      setPersonData((prevData) =>
+        prevData.filter((person) => person.id !== personId)
+      );
+
+      toast({
+        title: "Success",
+        description: "Person deleted successfully",
         variant: "default",
       });
     } catch (error) {
       console.error("Delete operation failed:", error);
+      toast({
+        title: "Error",
+        description: "Failed to delete person. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
 
-      // Show error message
+  // Update the handleUpdateEvent function
+  const handleUpdateEvent = async (updatedEvent) => {
+    try {
+      const response = await fetch(
+        `http://localhost:8080/api/events/${eventId}`,
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${session.accessToken}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(updatedEvent),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to update event");
+      }
+
+      const updatedEventData = await response.json();
+      setEventData(updatedEventData);
+
+      toast({
+        title: "Success",
+        description: "Event updated successfully",
+        variant: "default",
+      });
+    } catch (error) {
+      console.error("Update event failed:", error);
+      toast({
+        title: "Error",
+        description: "Failed to update event. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  // Update the handleDeleteEvent function
+  const handleDeleteEvent = async (eventId) => {
+    try {
+      // First, delete all index cards associated with this event
+      const indexCardsResponse = await fetch(
+        `http://localhost:8080/api/index-cards/event/${eventId}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${session.accessToken}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!indexCardsResponse.ok) {
+        throw new Error("Failed to delete associated index cards");
+      }
+
+      // Then delete the event itself
+      const eventResponse = await fetch(
+        `http://localhost:8080/api/events/${eventId}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${session.accessToken}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!eventResponse.ok) {
+        throw new Error("Failed to delete event");
+      }
+
+      // Redirect to dashboard after successful deletion
+      router.push("/dashboard");
+
+      toast({
+        title: "Success",
+        description: "Event and associated data deleted successfully",
+        variant: "default",
+      });
+    } catch (error) {
+      console.error("Delete operation failed:", error);
       toast({
         title: "Error",
         description: "Failed to delete event. Please try again.",
@@ -184,7 +371,85 @@ export default function EventPage() {
       });
     }
   };
-  if (isLoading || !eventData) return <div>Loading...</div>;
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
+  if (!eventData) return <div>No event data found</div>;
+  if (!personData || personData.length === 0) {
+    return (
+      <div className="container mx-auto p-4 space-y-8">
+        <div className="text-center space-y-2">
+          <h1 className="text-4xl font-bold capitalize">{eventData.name}</h1>
+        </div>
+
+        <div className="flex flex-col sm:flex-row gap-4 w-full">
+          <Button
+            variant="outline"
+            className="w-full sm:w-auto bg-pink-500 hover:bg-pink-800"
+          >
+            <Link
+              href="/dashboard"
+              className="w-full flex items-center justify-center text-black"
+            >
+              <ChevronLeft />
+              Back to Groups
+            </Link>
+          </Button>
+
+          <div className="flex flex-col sm:flex-row gap-4 w-full sm:justify-end">
+            <Button
+              className="w-full sm:w-auto bg-blue-500 hover:bg-blue-900"
+              onClick={() => setIsAddModalOpen(true)}
+            >
+              <Plus className="h-4 w-4" />
+              Add Person
+            </Button>
+            <Button
+              className="w-full sm:w-auto bg-green-500 hover:bg-green-700"
+              onClick={() => setIsEventUpdateModalOpen(true)}
+            >
+              Update Group
+            </Button>
+
+            <Button
+              className="w-full sm:w-auto bg-yellow-500 hover:bg-yellow-700"
+              onClick={() => setIsDeleteModalOpen(true)}
+            >
+              Delete Group
+            </Button>
+          </div>
+          <UpdateEventModal
+            isOpen={isEventUpdateModalOpen}
+            onClose={() => setIsEventUpdateModalOpen(false)}
+            onUpdateEvent={handleUpdateEvent}
+            eventData={eventData}
+          />
+          <DeleteConfirmationModal
+            isOpen={isDeleteModalOpen}
+            onClose={() => setIsDeleteModalOpen(false)}
+            onDelete={(id) => handleDeleteEvent(id)}
+            itemId={eventId}
+            title="Delete Event"
+            message="Are you sure you would like to delete this event and people belonging to the event? This action cannot be undone."
+          />
+        </div>
+
+        <div className="text-center mt-8">
+          <p className="text-lg text-gray-600">
+            No people have been added to this group yet.
+          </p>
+          <p className="text-md text-gray-500">
+            Click the "Add Person" button to get started!
+          </p>
+        </div>
+
+        <AddPersonModal
+          isOpen={isAddModalOpen}
+          onClose={() => setIsAddModalOpen(false)}
+          onAddPerson={handleAddPerson}
+        />
+      </div>
+    );
+  }
   return (
     <div className="container mx-auto p-4 space-y-8">
       <div className="text-center space-y-2">

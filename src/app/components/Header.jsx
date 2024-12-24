@@ -4,8 +4,10 @@ import Link from "next/link";
 import AccountMenu from "./AccountMenu";
 import LoginButton from "./LoginButton";
 import { useEffect, useState } from "react";
+import DeleteAccountDialog from "./DeleteAccountDialog";
 
 export default function Header() {
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const { data: session, status } = useSession();
   const [isUserData, setIsUserData] = useState();
   const [loading, setLoading] = useState(true);
@@ -13,6 +15,7 @@ export default function Header() {
   useEffect(() => {
     const fetchUserInfo = async () => {
       try {
+        console.log(session.accessToken);
         if (!session?.accessToken) return;
 
         const response = await fetch("http://localhost:8080/api/users/me", {
@@ -48,8 +51,7 @@ export default function Header() {
   };
 
   const handleDeleteAccount = () => {
-    // Implement account deletion logic
-    console.log("Deleting account...");
+    setShowDeleteDialog(true);
   };
 
   const handleUpdateAccount = () => {
@@ -57,7 +59,6 @@ export default function Header() {
     console.log("Updating account...");
   };
 
-  console.log(isUserData);
   return (
     <header className="container mx-auto px-4 py-6 flex flex-col sm:flex-row justify-between items-center">
       <div>
@@ -72,6 +73,10 @@ export default function Header() {
             onLogout={signOut}
             onDeleteAccount={handleDeleteAccount}
             onUpdateAccount={handleUpdateAccount}
+          />
+          <DeleteAccountDialog
+            isOpen={showDeleteDialog}
+            onClose={() => setShowDeleteDialog(false)}
           />
         </div>
       ) : (

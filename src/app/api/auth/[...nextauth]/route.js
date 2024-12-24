@@ -10,7 +10,7 @@ const handler = NextAuth({
       issuer: process.env.NEXT_PUBLIC_COGNITO_ISSUER,
       authorization: {
         params: {
-          scope: "openid email profile",
+          scope: "openid email profile aws.cognito.signin.user.admin",
           response_type: "code",
         },
       },

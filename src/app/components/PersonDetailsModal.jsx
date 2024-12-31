@@ -236,7 +236,7 @@ export function PersonDetailsModal({
                   </p>
                   <Textarea
                     name="memoryTriggers"
-                    value="Temp"
+                    value={editedPerson.memoryTriggers}
                     onChange={handleInputChange}
                     className="mb-2 "
                   />
@@ -249,8 +249,7 @@ export function PersonDetailsModal({
                     <strong>Memory Triggers:</strong>
                   </p>
                   <p className="font-light">
-                    {/* {editedPerson.physicalDescription} */}
-                    Wearing big glasses
+                    {editedPerson.memoryTriggers}
                   </p>
                 </div>
               )}

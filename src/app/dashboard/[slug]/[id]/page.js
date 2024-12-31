@@ -77,6 +77,7 @@ export default function EventPage() {
           }
 
           const eventData = await eventResponse.json();
+          
           setEventData(eventData);
           setPersonData([]);
         } else {
@@ -407,7 +408,9 @@ export default function EventPage() {
     );
   }
   return (
+
     <div className="container mx-auto p-4 space-y-8">
+      
       <div className="text-center space-y-2">
         <h1 className="text-4xl font-bold capitalize">{eventData.name}</h1>
       </div>

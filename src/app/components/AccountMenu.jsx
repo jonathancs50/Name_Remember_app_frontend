@@ -22,14 +22,7 @@ export default function AccountMenu({ name, onLogout, onDeleteAccount, onUpdateA
         <Card className="absolute mt-2 w-56 z-10">
           <CardContent className="p-4">
             <div className="space-y-2">
-            <Button 
-                variant="outline" 
-                className="w-full justify-start" 
-                onClick={onUpdateAccount}
-              >
-                <RefreshCw className="mr-2 h-4 w-4" />
-                Update account
-              </Button>
+           
               <Button 
                 variant="outline" 
                 className="w-full justify-start" 

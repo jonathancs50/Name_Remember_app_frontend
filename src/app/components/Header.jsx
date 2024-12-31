@@ -5,8 +5,10 @@ import AccountMenu from "./AccountMenu";
 import LoginButton from "./LoginButton";
 import { useEffect, useState } from "react";
 import DeleteAccountDialog from "./DeleteAccountDialog";
+import { useRouter } from 'next/navigation'
 
 export default function Header() {
+  const router = useRouter();
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const { data: session, status } = useSession();
   const [isUserData, setIsUserData] = useState();
@@ -21,15 +23,19 @@ export default function Header() {
           return;
         }
   
-        console.log("ID Token:", session.idToken);
-  
+       
         const response = await fetch("http://localhost:8080/api/users/me", {
           headers: {
             Authorization: `Bearer ${session.idToken}`, // Correctly pass the ID token
             "Content-Type": "application/json",
           },
         });
-  
+        if (response.status === 401) {
+          console.error("Unauthorized access - redirecting to login");
+          signOut();
+          router.push("/"); // Redirect to the login page
+          return;
+        }
         if (!response.ok) {
           throw new Error("Failed to fetch user data");
         }
@@ -81,7 +87,7 @@ export default function Header() {
             name={isUserData}
             onLogout={signOut}
             onDeleteAccount={handleDeleteAccount}
-            onUpdateAccount={handleUpdateAccount}
+           
           />
           <DeleteAccountDialog
             isOpen={showDeleteDialog}

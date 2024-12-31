@@ -15,35 +15,44 @@ export default function Header() {
   useEffect(() => {
     const fetchUserInfo = async () => {
       try {
-        console.log(session.accessToken);
-        if (!session?.accessToken) return;
-
+        // Ensure the session is loaded and contains the ID token
+        if (!session || !session.idToken) {
+          console.error("ID Token is missing in the session");
+          return;
+        }
+  
+        console.log("ID Token:", session.idToken);
+  
         const response = await fetch("http://localhost:8080/api/users/me", {
           headers: {
-            Authorization: `Bearer ${session.accessToken}`,
+            Authorization: `Bearer ${session.idToken}`, // Correctly pass the ID token
             "Content-Type": "application/json",
           },
         });
-
+  
         if (!response.ok) {
-          throw new Error("Failed to fetch persons");
+          throw new Error("Failed to fetch user data");
         }
-
+  
         const data = await response.json();
-        // Extract just the username from tokenClaims
-        const username = data.tokenClaims.username;
+        console.log("Backend Response:", data);
+  
+        // Adjust to match the backend response
+        const username = data.givenName; // Assuming the backend sends `givenName`
         setIsUserData(username);
         setError(null);
       } catch (err) {
+        console.error("Error fetching user info:", err);
         setError(err.message);
         setIsUserData("User");
       } finally {
         setLoading(false);
       }
     };
-
+  
     fetchUserInfo();
   }, [session]);
+  
 
   const handleLogout = () => {
     // Implement logout logic

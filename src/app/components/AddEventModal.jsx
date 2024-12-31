@@ -97,7 +97,7 @@ export function AddEventModal({ isOpen, onClose, onAddEvent }) {
                 value={formData.location}
                 onChange={handleChange}
                 className="col-span-3"
-                required
+          
                 placeholder="Optional"
               />
             </div>

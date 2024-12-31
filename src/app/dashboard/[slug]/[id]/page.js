@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { useParams, useSearchParams } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { toast } from "@/hooks/use-toast";
 
 import { Badge } from "@/components/ui/badge";
 import { PersonDetailsModal } from "@/app/components/PersonDetailsModal";
@@ -171,20 +170,9 @@ export default function EventPage() {
 
       setPersonData((prevData) => [...prevData, newPersonWithTriggers]);
 
-      toast({
-        title: "Success",
-        description: "Person and index card created successfully",
-        variant: "default",
-      });
     } catch (error) {
       console.error("Create person and index card failed:", error);
-      toast({
-        title: "Error",
-        description:
-          error.message ||
-          "Failed to create person and index card. Please try again.",
-        variant: "destructive",
-      });
+     
     }
   };
 
@@ -213,18 +201,10 @@ export default function EventPage() {
         )
       );
 
-      toast({
-        title: "Success",
-        description: "Person updated successfully",
-        variant: "default",
-      });
+    
     } catch (error) {
       console.error("Update person failed:", error);
-      toast({
-        title: "Error",
-        description: "Failed to update person. Please try again.",
-        variant: "destructive",
-      });
+   
     }
   };
 
@@ -267,18 +247,10 @@ export default function EventPage() {
         prevData.filter((person) => person.id !== personId)
       );
 
-      toast({
-        title: "Success",
-        description: "Person deleted successfully",
-        variant: "default",
-      });
+   
     } catch (error) {
       console.error("Delete operation failed:", error);
-      toast({
-        title: "Error",
-        description: "Failed to delete person. Please try again.",
-        variant: "destructive",
-      });
+  
     }
   };
 
@@ -304,18 +276,10 @@ export default function EventPage() {
       const updatedEventData = await response.json();
       setEventData(updatedEventData);
 
-      toast({
-        title: "Success",
-        description: "Event updated successfully",
-        variant: "default",
-      });
+    
     } catch (error) {
       console.error("Update event failed:", error);
-      toast({
-        title: "Error",
-        description: "Failed to update event. Please try again.",
-        variant: "destructive",
-      });
+    
     }
   };
 
@@ -357,18 +321,10 @@ export default function EventPage() {
       // Redirect to dashboard after successful deletion
       router.push("/dashboard");
 
-      toast({
-        title: "Success",
-        description: "Event and associated data deleted successfully",
-        variant: "default",
-      });
+    
     } catch (error) {
       console.error("Delete operation failed:", error);
-      toast({
-        title: "Error",
-        description: "Failed to delete event. Please try again.",
-        variant: "destructive",
-      });
+   
     }
   };
   if (isLoading) return <div>Loading...</div>;

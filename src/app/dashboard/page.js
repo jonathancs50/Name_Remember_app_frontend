@@ -100,18 +100,10 @@ export default function HomePage() {
 
       const createdEvent = await response.json();
       setEventData((prevData) => [...prevData, createdEvent]);
-      toast({
-        title: "Success",
-        description: "Event created successfully",
-      });
+   
     } catch (error) {
       console.error("Error creating event:", error);
-      toast({
-        title: "Error",
-        description:
-          error.message || "Failed to create event. Please try again.",
-        variant: "destructive",
-      });
+    
     }
   };
 

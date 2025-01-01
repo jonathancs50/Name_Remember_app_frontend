@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "MeetMinder",
+  title: "ReMind",
   description: "Never forget a name!",
 };
 

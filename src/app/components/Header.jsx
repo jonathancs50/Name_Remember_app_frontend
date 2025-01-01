@@ -78,7 +78,7 @@ export default function Header() {
     <header className="container mx-auto px-4 py-6 flex flex-col sm:flex-row justify-between items-center">
       <div>
         <Link href="/dashboard">
-          <h1 className="text-3xl font-bold cursor-pointer">RememberMe</h1>
+          <h1 className="text-3xl font-bold cursor-pointer">ReMind</h1>
         </Link>
       </div>
       {status === "loading" ? null : session ? (

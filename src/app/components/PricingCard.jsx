@@ -5,7 +5,7 @@ const plans = [
   {
     id: 1,
     title: "Free Plan",
-    subtitle: "Remember",
+    subtitle: "ReMind",
     color: "bg-blue-500",
     features: [
       "Store unlimited contact profiles",
@@ -22,7 +22,7 @@ const plans = [
   {
     id: 2,
     title: "Premium Plan",
-    subtitle: "Remember+",
+    subtitle: "ReMind+",
     color: "bg-pink-500",
     comingSoon: true,
     features: [

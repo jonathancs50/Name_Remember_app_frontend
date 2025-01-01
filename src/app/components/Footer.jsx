@@ -6,7 +6,7 @@ export default function Footer() {
       <div className="container mx-auto px-4">
         <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-3">
           <div>
-            <h3 className="text-lg font-semibold mb-4">MeetMinder</h3>
+            <h3 className="text-lg font-semibold mb-4">ReMind</h3>
             <p className="text-blue-200">
               Never forget a face, always remember a story
             </p>
@@ -15,7 +15,7 @@ export default function Footer() {
             <h4 className="text-lg font-semibold mb-4">Quick Links</h4>
             <ul className="space-y-2">
               <li>
-                <a href="/home" className="text-blue-200 hover:text-white">
+                <a href="/dashboard" className="text-blue-200 hover:text-white">
                   Home
                 </a>
               </li>
@@ -52,7 +52,7 @@ export default function Footer() {
           </div>
         </div>
         <div className="mt-8 pt-8 border-t border-blue-700 text-center text-blue-300">
-          <p>&copy; 2023 MeetMinder. All rights reserved.</p>
+          <p>&copy; 2023 ReMind. All rights reserved.</p>
         </div>
       </div>
     </footer>

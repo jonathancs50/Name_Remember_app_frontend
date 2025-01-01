@@ -32,7 +32,7 @@ export default function HeroSection() {
             Transform Brief Encounters into Lasting Connections
           </h1>
           <p className="text-xl md:text-2xl text-muted-foreground mb-6">
-            MeetMinder helps you remember everyone you meet at social events,
+            ReMind helps you remember everyone you meet at social events,
             work functions, and gatherings.
           </p>
           <p className="text-lg md:text-xl text-muted-foreground mb-8">

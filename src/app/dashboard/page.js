@@ -64,6 +64,14 @@ export default function HomePage() {
 
   //MODAL FUNCTIONS
   const handleAddEvent = async (newEvent) => {
+    if (
+      newEvent.type === null ||
+      newEvent.type === undefined ||
+      newEvent.type === ""
+    ) {
+      newEvent.type = "OTHER";
+    }
+
     const eventPayload = {
       name: newEvent.name,
       type: newEvent.type,
@@ -100,10 +108,8 @@ export default function HomePage() {
 
       const createdEvent = await response.json();
       setEventData((prevData) => [...prevData, createdEvent]);
-   
     } catch (error) {
       console.error("Error creating event:", error);
-    
     }
   };
 

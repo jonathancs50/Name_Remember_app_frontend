@@ -69,18 +69,8 @@ export default function Header() {
     }
   }, [session, status]);
 
-  const handleLogout = () => {
-    // Implement logout logic
-    console.log("Logging out...");
-  };
-
   const handleDeleteAccount = () => {
     setShowDeleteDialog(true);
-  };
-
-  const handleUpdateAccount = () => {
-    // Implement account update logic
-    console.log("Updating account...");
   };
 
   return (

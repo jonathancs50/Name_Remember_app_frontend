@@ -5,7 +5,7 @@ import AccountMenu from "./AccountMenu";
 import LoginButton from "./LoginButton";
 import { useEffect, useState } from "react";
 import DeleteAccountDialog from "./DeleteAccountDialog";
-import { useRouter } from 'next/navigation'
+import { useRouter } from "next/navigation";
 
 export default function Header() {
   const router = useRouter();
@@ -17,34 +17,41 @@ export default function Header() {
   useEffect(() => {
     const fetchUserInfo = async () => {
       try {
-        // Ensure the session is loaded and contains the ID token
-        if (!session || !session.idToken) {
-          console.error("ID Token is missing in the session");
+        // Check if we're still loading the session
+        if (status === "loading") {
           return;
         }
-  
-       
+
+        // Check if we have a valid session with an ID token
+        if (!session?.idToken) {
+          console.error("No valid session or ID token available");
+          setIsUserData("User");
+          setLoading(false);
+          return;
+        }
+
         const response = await fetch("http://localhost:8080/api/users/me", {
           headers: {
-            Authorization: `Bearer ${session.idToken}`, // Correctly pass the ID token
+            Authorization: `Bearer ${session.idToken}`,
             "Content-Type": "application/json",
           },
         });
+
         if (response.status === 401) {
           console.error("Unauthorized access - redirecting to login");
-          signOut();
-          router.push("/"); // Redirect to the login page
+          await signOut();
+          router.push("/");
           return;
         }
+
         if (!response.ok) {
           throw new Error("Failed to fetch user data");
         }
-  
+
         const data = await response.json();
         console.log("Backend Response:", data);
-  
-        // Adjust to match the backend response
-        const username = data.givenName; // Assuming the backend sends `givenName`
+
+        const username = data.givenName;
         setIsUserData(username);
         setError(null);
       } catch (err) {
@@ -55,10 +62,12 @@ export default function Header() {
         setLoading(false);
       }
     };
-  
-    fetchUserInfo();
-  }, [session]);
-  
+
+    // Only run fetchUserInfo if we have a session and we're not loading
+    if (status !== "loading") {
+      fetchUserInfo();
+    }
+  }, [session, status]);
 
   const handleLogout = () => {
     // Implement logout logic
@@ -87,7 +96,6 @@ export default function Header() {
             name={isUserData}
             onLogout={signOut}
             onDeleteAccount={handleDeleteAccount}
-           
           />
           <DeleteAccountDialog
             isOpen={showDeleteDialog}

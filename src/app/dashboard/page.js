@@ -60,7 +60,7 @@ export default function HomePage() {
   }, [session]);
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
-  if (!eventData) return <div>No groups found</div>;
+  if (!eventData) return <div></div>;
 
   //MODAL FUNCTIONS
   const handleAddEvent = async (newEvent) => {
@@ -119,7 +119,7 @@ export default function HomePage() {
       <div className="text-center space-y-2">
         <h1 className="text-4xl font-bold">Your Groups</h1>
         <p className="text-muted-foreground">
-          Create an group for events/friends
+          Create a group for events/friends
         </p>
         <div className="flex flex-col sm:flex-row gap-4 w-full sm:justify-end">
           <Button

@@ -1,10 +1,9 @@
 # ReMind
 
-ReMind is a web application designed to help users remember people they meet at social events, work functions, and gatherings. Inspired by the historical practice of using index cards for relationship management, ReMind brings this concept into the digital age.
-
+ReMind is a fun web application I designed to help myself remember people that I have met at social events, work functions, and gatherings. Inspired by the historical practice of using index cards for relationship management.
 ## Background
 
-ReMind was born from a personal challenge that many face: remembering names and details about people we meet. The inspiration comes from a fascinating historical account of a U.S. president who maintained a system of index cards to track relationships and build meaningful connections. This practice proved invaluable in his journey to the presidency, demonstrating the power of personal relationship management.
+ReMind was created from a personal challenge that many face: remembering names and details about people we meet. The idea comes from a fascinating historical account of a U.S. president who maintained a system of index cards to track relationships and build meaningful connections. This practice proved invaluable in his journey to the presidency, demonstrating the power of personal relationship management.
 
 ## System Architecture
 
@@ -161,10 +160,4 @@ The project provided hands-on experience with modern web technologies while solv
 
 [Add installation and setup instructions]
 
-## Contributing
 
-[Add contribution guidelines]
-
-## License
-
-[Add license information]

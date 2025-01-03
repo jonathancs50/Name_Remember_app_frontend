@@ -8,7 +8,7 @@ ReMind was created from a personal challenge that many face: remembering names a
 ## System Architecture
 
 ### High-Level Architecture
-![High Level Architecture](path/to/high-level-architecture.png)
+![High Level Architecture](public/high_lvl_view.png)
 
 The system is built using a modern tech stack:
 - Frontend: Next.js

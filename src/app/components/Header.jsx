@@ -24,7 +24,6 @@ export default function Header() {
 
         // Check if we have a valid session with an ID token
         if (!session?.idToken) {
-          console.error("No valid session or ID token available");
           setIsUserData("User");
           setLoading(false);
           return;

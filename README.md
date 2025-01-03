@@ -156,8 +156,4 @@ During the development of ReMind, I gained valuable experience in several areas:
 
 The project provided hands-on experience with modern web technologies while solving a real-world problem. Future iterations would focus on expanding functionality and improving user experience through additional features and optimizations.
 
-## Getting Started
-
-[Add installation and setup instructions]
-
 

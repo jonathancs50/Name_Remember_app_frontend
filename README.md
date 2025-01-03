@@ -18,12 +18,12 @@ The system is built using a modern tech stack:
 - Containerization: Docker
 
 ### Database Schema
-![Database Schema](path/to/db-schema.png)
+![Database Schema](public/springbootDB.png)
 
 The database design ensures proper data isolation and relationship management between users, events, persons, and index cards.
 
 ### Authentication Flow
-![Authentication Flow](path/to/auth-flow.png)
+![Authentication Flow]("public/auth_process_app_reminder.png")
 
 The application uses AWS Cognito for secure authentication, implementing the OAuth2 authorization code grant flow.
 

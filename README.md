@@ -23,7 +23,7 @@ The system is built using a modern tech stack:
 The database design ensures proper data isolation and relationship management between users, events, persons, and index cards.
 
 ### Authentication Flow
-![Authentication Flow]("public/auth_process_app_reminder.png")
+![Authentication Flow](public/auth_process_app_reminder.png)
 
 The application uses AWS Cognito for secure authentication, implementing the OAuth2 authorization code grant flow.
 
